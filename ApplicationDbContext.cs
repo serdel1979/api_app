@@ -10,10 +10,11 @@ namespace api_app
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<User>().ToTable("AspNetUsers");
         }
 
 
@@ -21,7 +22,7 @@ namespace api_app
         public DbSet<Responsibility> Responsabilities { get; set; }
         public DbSet<Job> Jobs { get; set; }
 
-
+        public DbSet<User> Users { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -17,6 +18,16 @@ namespace api_app
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.KeyLengthLimit = int.MaxValue;
+            });
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddDbContext<ApplicationDbContext>(options
              => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
 
