@@ -1,6 +1,6 @@
-﻿namespace api_app.Entities
+﻿namespace api_app.DTO
 {
-    public class Responsibility
+    public class ResponsabilityRespDTO
     {
         public int Id { get; set; }
 

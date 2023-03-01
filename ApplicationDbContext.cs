@@ -14,12 +14,11 @@ namespace api_app
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<User>().ToTable("AspNetUsers");
         }
 
 
         public DbSet<Project> Projects { get; set; }
-        public DbSet<Responsibility> Responsabilities { get; set; }
+        public DbSet<Responsability> Responsabilities { get; set; }
         public DbSet<Job> Jobs { get; set; }
 
         public DbSet<User> Users { get; set; }

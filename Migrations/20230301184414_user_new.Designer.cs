@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api_app;
@@ -11,9 +12,10 @@ using api_app;
 namespace api_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230301184414_user_new")]
+    partial class user_new
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +86,7 @@ namespace api_app.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("api_app.Entities.Responsability", b =>
+            modelBuilder.Entity("api_app.Entities.Responsibility", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,6 +119,9 @@ namespace api_app.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Id_Responsability")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id_Responsibility")
                         .HasColumnType("integer");
 
                     b.Property<bool>("Leader")

@@ -10,7 +10,7 @@ namespace api_app.Controllers
     {
 
 
-        public ClimaController(IConfiguration Configuration, ) {
+        public ClimaController(IConfiguration Configuration) {
             this.Configuration = Configuration;
 
             this._client = new HttpClient();
@@ -20,15 +20,15 @@ namespace api_app.Controllers
 
         private HttpClient _client;
 
-        [HttpGet("/lat/{lat}/longitud/{longitud}")]
-        public async Task<ActionResult> clime(string lat, string longitud)
+        [HttpGet("/latitud/{latitud}/longitud/{longitud}")]
+        public async Task<ActionResult> clime(string latitud, string longitud)
         {
             try
             {
                 var key = Configuration.GetValue<string>("ApiKey");
-                var response = await _client.GetAsync($"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={longitud}&appid={key}&lang=es");
+                var response = await _client.GetAsync($"https://api.openweathermap.org/data/2.5/weather?lat={latitud}&lon={longitud}&appid={key}&lang=es");
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"latitud {lat} y {longitud} recibida");
+                Console.WriteLine($"latitud {latitud} y {longitud} recibida");
 
                 return Ok(content);
             }

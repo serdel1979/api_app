@@ -24,14 +24,13 @@ namespace api_app
                 options.KeyLengthLimit = int.MaxValue;
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
 
             services.AddDbContext<ApplicationDbContext>(options
              => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
 
             services.AddControllers();
+
+            services.AddAutoMapper(typeof(StartUp));
 
             //services.AddIdentity<IdentityUser, IdentityRole>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()

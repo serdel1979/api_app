@@ -1,8 +1,10 @@
 ﻿using api_app.DTO;
 using api_app.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api_app.Controllers
 {
@@ -10,28 +12,32 @@ namespace api_app.Controllers
     [Route("users")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> userManager;
 
-        public UserController(
-            UserManager<IdentityUser> userManager
-            ) {
-            this.userManager = userManager;
+        private readonly ApplicationDbContext context;
+        private IMapper mapper;
+
+        public UserController(ApplicationDbContext context, IMapper mapper) {
+            this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpPost("add")]
         [AllowAnonymous]
         //  [Authorize(Policy = "EsAdmin")]
-        public async Task<ActionResult> RegistraUsuario(UserNewDTO userNew)
+        public async Task<ActionResult> AddUser(UserNewDTO userNewDTO)
         {
-            var user = new User
+            var existe = await context.Users.AnyAsync(x => x.Email == userNewDTO.Email);
+            if (existe)
             {
-                Email = userNew.Email,
-                Leader = true
-            };
+                return BadRequest($"El {userNewDTO.Email} ya existe!!!");
+            }
 
-            Console.WriteLine(user);
-            
-            return Ok(userNew);
+            var user = mapper.Map<User>(userNewDTO);
+
+            context.Add(user);
+            await context.SaveChangesAsync();
+
+            return Ok(userNewDTO);
         }
 
 
