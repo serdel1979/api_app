@@ -15,7 +15,7 @@ namespace api_app.Entities
         public int Id_Responsibility { get; set; }
         public string Reference { get; set; }
         public int Id_Leader { get; set; }
-        public string Reference { get; set; }
+        public Responsability Responsability { get; set; }
 
 
     }
