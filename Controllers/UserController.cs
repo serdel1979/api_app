@@ -37,7 +37,7 @@ namespace api_app.Controllers
             context.Add(user);
             await context.SaveChangesAsync();
 
-            return Ok(userNewDTO);
+            return Ok(user);
         }
 
 

@@ -16,6 +16,8 @@ namespace api_app.Utilities
             CreateMap<Responsability, ResponsabilityRespDTO>();
             CreateMap<JobNewDTO, Job>();
             CreateMap<Job, JobRespDTO>();
+            CreateMap<ProjectNewDTO, Project>();
+            CreateMap<Project, ProjectRespDTO>();
             //CreateMap<Solicitud, SolicitudDTO>().ReverseMap();
             //CreateMap<NuevaSolicitudDTO, Solicitud>();
             //CreateMap<IdentityUser, UsuarioDTO>().ReverseMap(); ;
