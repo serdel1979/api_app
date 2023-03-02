@@ -24,9 +24,13 @@ namespace api_app
                 options.KeyLengthLimit = int.MaxValue;
             });
 
+            //LocalConnection
+
+            //services.AddDbContext<ApplicationDbContext>(options
+            // => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
 
             services.AddDbContext<ApplicationDbContext>(options
-             => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
+            => options.UseNpgsql(Configuration.GetConnectionString("LocalConnection")));
 
             services.AddControllers();
 
