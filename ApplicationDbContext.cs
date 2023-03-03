@@ -9,7 +9,6 @@ namespace api_app
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-            //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
