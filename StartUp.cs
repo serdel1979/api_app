@@ -29,6 +29,8 @@ namespace api_app
             //services.AddDbContext<ApplicationDbContext>(options
             // => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
 
+            //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             services.AddDbContext<ApplicationDbContext>(options
             => options.UseNpgsql(Configuration.GetConnectionString("LocalConnection")));
 
@@ -57,7 +59,7 @@ namespace api_app
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
         
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
