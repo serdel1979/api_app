@@ -22,8 +22,6 @@ namespace api_app.Controllers
         }
 
         [HttpPost("add")]
-        [AllowAnonymous]
-        //  [Authorize(Policy = "EsAdmin")]
         public async Task<ActionResult> AddUser(UserNewDTO userNewDTO)
         {
             var existe = await context.Users.AnyAsync(x => x.Email == userNewDTO.Email);
@@ -37,7 +35,23 @@ namespace api_app.Controllers
             context.Add(user);
             await context.SaveChangesAsync();
 
-            return Ok(user);
+            return Ok("Usuario agregado!!!");
+        }
+
+
+        [HttpGet("getUser/{id:int}")]
+        public async Task<ActionResult<UserResponseDTO>> GetUser(int id)
+        {
+            var user = await context.Users.Include(x=>x.Responsability)
+                           .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var dto = mapper.Map<UserResponseDTO>(user);
+            return dto;
         }
 
 

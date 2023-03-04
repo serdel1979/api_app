@@ -12,8 +12,8 @@ using api_app;
 namespace api_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230301223709_users-responsabilities-fotos-relaciones")]
-    partial class usersresponsabilitiesfotosrelaciones
+    [Migration("20230303201555_relacion_usuario")]
+    partial class relacion_usuario
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,12 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
 
                     b.ToTable("Activities_next_day");
                 });
@@ -53,7 +58,12 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
 
                     b.ToTable("Developed_activities");
                 });
@@ -87,9 +97,41 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("ReportId");
+
                     b.ToTable("Needs_next_day");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Observation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Report_detailId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.HasIndex("Report_detailId");
+
+                    b.ToTable("Observation");
                 });
 
             modelBuilder.Entity("api_app.Entities.Photo", b =>
@@ -104,7 +146,12 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
+                    b.Property<int>("ObservationId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ObservationId");
 
                     b.ToTable("Photos");
                 });
@@ -121,19 +168,20 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Construction_manager")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("DateEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DateStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("Id_Job")
+                    b.Property<int>("JobId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Id_Leader")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id_Responsibility")
+                    b.Property<int>("LeaderId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -144,18 +192,71 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ResponsabilityId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Supervisor")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ResponsabilityId");
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("LeaderId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Report");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Report_detail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Departure_time")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Entry_Time")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ReporteId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReporteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Report_detail");
                 });
 
             modelBuilder.Entity("api_app.Entities.Responsability", b =>
@@ -190,9 +291,6 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Id_Responsability")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("Leader")
                         .HasColumnType("boolean");
 
@@ -200,11 +298,16 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ResponsabilityId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ResponsabilityId");
 
                     b.ToTable("Users");
                 });
@@ -405,7 +508,103 @@ namespace api_app.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("api_app.Entities.Activity_next_day", b =>
+                {
+                    b.HasOne("api_app.Entities.Report", null)
+                        .WithMany("Activities_next_day")
+                        .HasForeignKey("ReportId");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Developed_Activity", b =>
+                {
+                    b.HasOne("api_app.Entities.Report", null)
+                        .WithMany("Developed_activities")
+                        .HasForeignKey("ReportId");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Need_next_day", b =>
+                {
+                    b.HasOne("api_app.Entities.Report", null)
+                        .WithMany("Needs_next_day")
+                        .HasForeignKey("ReportId");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Observation", b =>
+                {
+                    b.HasOne("api_app.Entities.Report", null)
+                        .WithMany("Observations")
+                        .HasForeignKey("ReportId");
+
+                    b.HasOne("api_app.Entities.Report_detail", "Report_detail")
+                        .WithMany()
+                        .HasForeignKey("Report_detailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report_detail");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Photo", b =>
+                {
+                    b.HasOne("api_app.Entities.Observation", "Observation")
+                        .WithMany("Photos")
+                        .HasForeignKey("ObservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Observation");
+                });
+
             modelBuilder.Entity("api_app.Entities.Project", b =>
+                {
+                    b.HasOne("api_app.Entities.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api_app.Entities.User", "Leader")
+                        .WithMany()
+                        .HasForeignKey("LeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Leader");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Report", b =>
+                {
+                    b.HasOne("api_app.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Report_detail", b =>
+                {
+                    b.HasOne("api_app.Entities.Report", "Reporte")
+                        .WithMany("Report_Detail")
+                        .HasForeignKey("ReporteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api_app.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reporte");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("api_app.Entities.User", b =>
                 {
                     b.HasOne("api_app.Entities.Responsability", "Responsability")
                         .WithMany()
@@ -465,6 +664,24 @@ namespace api_app.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("api_app.Entities.Observation", b =>
+                {
+                    b.Navigation("Photos");
+                });
+
+            modelBuilder.Entity("api_app.Entities.Report", b =>
+                {
+                    b.Navigation("Activities_next_day");
+
+                    b.Navigation("Developed_activities");
+
+                    b.Navigation("Needs_next_day");
+
+                    b.Navigation("Observations");
+
+                    b.Navigation("Report_Detail");
                 });
 #pragma warning restore 612, 618
         }
