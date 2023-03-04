@@ -5,7 +5,7 @@ namespace api_app.Controllers
 {
 
     [ApiController]
-    [Route("clima")]
+    [Route("climate")]
     public class ClimaController : ControllerBase
     {
 
@@ -21,7 +21,7 @@ namespace api_app.Controllers
         private HttpClient _client;
 
         [HttpGet("/latitud/{latitud}/longitud/{longitud}")]
-        public async Task<ActionResult> clime(string latitud, string longitud)
+        public async Task<ActionResult> climate(string latitud, string longitud)
         {
             try
             {
