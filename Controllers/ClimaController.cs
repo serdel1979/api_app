@@ -20,7 +20,7 @@ namespace api_app.Controllers
 
         private HttpClient _client;
 
-        [HttpGet("/latitud/{latitud}/longitud/{longitud}")]
+        [HttpGet("{latitud}/{longitud}")]
         public async Task<ActionResult> climate(string latitud, string longitud)
         {
             try
