@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace api_app.Controllers
 {
@@ -16,9 +17,17 @@ namespace api_app.Controllers
         private readonly ApplicationDbContext context;
         private IMapper mapper;
 
-        public UserController(ApplicationDbContext context, IMapper mapper) {
+        public IConfiguration Configuration { get; private set; }
+
+        private HttpClient _client;
+
+        public UserController(ApplicationDbContext context, IMapper mapper, IConfiguration Configuration) {
             this.context = context;
             this.mapper = mapper;
+
+            this.Configuration = Configuration;
+
+            this._client = new HttpClient();
         }
 
         [HttpPost("add")]
@@ -52,6 +61,25 @@ namespace api_app.Controllers
 
             var dto = mapper.Map<UserResponseDTO>(user);
             return dto;
+        }
+
+
+        //endpoint de prueba
+        [HttpGet("getUsers/{page:int}/{count:int}")]
+        public async Task<ActionResult<UserResponseDTO>> GetUsers(int page, int count)
+        {
+            try
+            {
+                var key = Configuration.GetValue<string>("ApiKey");
+                var response = await _client.GetAsync($"https://randomuser.me/api?page={page}&results={count}");
+                var content = await response.Content.ReadAsStringAsync();
+
+                return Ok(content);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
 
