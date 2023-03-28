@@ -44,7 +44,7 @@ namespace api_app.Controllers
             context.Add(user);
             await context.SaveChangesAsync();
 
-            return Ok("Usuario agregado!!!");
+            return Ok("Usuario agregado...");
         }
 
 
