@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace api_app.Controllers
 {
@@ -18,17 +21,23 @@ namespace api_app.Controllers
 
         private readonly ApplicationDbContext context;
         private IMapper mapper;
+        private readonly UserManager<IdentityUser> userManager;
 
         public IConfiguration Configuration { get; private set; }
 
         private HttpClient _client;
 
-        public UserController(ApplicationDbContext context, IMapper mapper, IConfiguration Configuration) {
+        public UserController(
+            ApplicationDbContext context, 
+            IMapper mapper, 
+            IConfiguration Configuration,
+            UserManager<IdentityUser> userManager) {
+
             this.context = context;
             this.mapper = mapper;
 
             this.Configuration = Configuration;
-
+            this.userManager = userManager;
             this._client = new HttpClient();
         }
 
@@ -103,26 +112,64 @@ namespace api_app.Controllers
 
             var dto = mapper.Map<UserResponseDTO>(user);
             return dto;
-            return Ok();
         }
 
 
-        //endpoint de prueba
-        [HttpGet("getUsers/{page:int}/{count:int}")]
-        public async Task<ActionResult<UserResponseDTO>> GetUsers(int page, int count)
-        {
-            try
-            {
-                var key = Configuration.GetValue<string>("ApiKey");
-                var response = await _client.GetAsync($"https://randomuser.me/api?page={page}&results={count}");
-                var content = await response.Content.ReadAsStringAsync();
 
-                return Ok(content);
-            }
-            catch (Exception ex)
+
+        [HttpPost("doAdmin")]
+        public async Task<ActionResult> hacerAdmin(LoginDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByNameAsync(editarAdminDTO.Email);
+
+            await userManager.AddClaimAsync(usuario, new Claim("esAdmin", "1"));
+            return NoContent();
+        }
+
+
+        [HttpPost("signin")]
+        public async Task<ActionResult<SigninResponse>> Signin(LoginDTO loginDTO)
+        {
+            var usrSolicitud = await context.Users.FirstOrDefaultAsync(usr => usr.Email == loginDTO.Email);
+            if (usrSolicitud != null && !usrSolicitud.Leader)
             {
-                return BadRequest(ex);
+                return BadRequest("No puede ingresar!!!");
             }
+
+            return await construirToken(loginDTO, usrSolicitud);
+        }
+
+        private async Task<SigninResponse> construirToken(LoginDTO loginDTO, User user)
+        {
+
+
+       
+
+            var claims = new List<Claim>(){
+                new Claim("user", user.Id)
+            };
+
+            var claimsDB = await userManager.GetClaimsAsync(user);
+
+            claims.AddRange(claimsDB);
+
+            var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret"]));
+            var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
+            var expiracion = DateTime.UtcNow.AddDays(1);
+
+            var securityToken = new JwtSecurityToken(issuer: null, audience: null, claims: claims,
+                expires: expiracion, signingCredentials: creds);
+
+
+            return new SigninResponse()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Claims = claimsDB.Count(),
+                Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
+                Expiracion = expiracion
+            };
+
         }
 
 
