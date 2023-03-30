@@ -15,6 +15,6 @@ namespace api_app.Entities
         public string Supervisor { get; set; }
         public string Reference { get; set; }
         public User Leader { get; set; }
-        public int LeaderId { get; set; }
+        public string LeaderId { get; set; }
     }
 }

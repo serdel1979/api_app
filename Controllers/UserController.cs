@@ -79,8 +79,8 @@ namespace api_app.Controllers
         }
 
 
-        [HttpGet("getUser/{id:int}")]
-        public async Task<ActionResult<UserResponseDTO>> GetUser(int id)
+        [HttpGet("getUser/{id}")]
+        public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
 
             Microsoft.Extensions.Primitives.StringValues headerValue;
@@ -91,7 +91,7 @@ namespace api_app.Controllers
                 Console.WriteLine(decodedString);
             }
 
-            var user = await context.Users.Include(x=>x.Responsability)
+            var user = await context.Users.Include(x => x.Responsability)
                            .FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
@@ -103,6 +103,7 @@ namespace api_app.Controllers
 
             var dto = mapper.Map<UserResponseDTO>(user);
             return dto;
+            return Ok();
         }
 
 
