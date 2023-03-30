@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace api_app.Controllers
 {
@@ -30,6 +31,34 @@ namespace api_app.Controllers
 
             this._client = new HttpClient();
         }
+
+        public class ResponseRole
+        {
+            public string Role { get; set; }
+        }
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginDTO loginDTO)
+        {
+            var role = "nullable";
+            var entidadSolicitud = await context.Users.FirstOrDefaultAsync(solicitud => solicitud.Email == loginDTO.Email);
+            if (entidadSolicitud != null)
+            {
+                if (entidadSolicitud.IsAdmin)
+                { role = "isadmin"; }
+            }
+            byte[] bytes = Encoding.UTF8.GetBytes(role);
+            string base64 = Convert.ToBase64String(bytes);
+            var response = new ResponseRole
+            {
+                Role = base64,
+            };
+            return Ok(response);
+        }
+
+
+
 
         [HttpPost("add")]
         public async Task<ActionResult> AddUser(UserNewDTO userNewDTO)

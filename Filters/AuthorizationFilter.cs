@@ -11,11 +11,13 @@ namespace api_app.Filter
 
 
 
+
         public void OnAuthorization(AuthorizationFilterContext context)
         {
 
             string token = context.HttpContext.Request.Headers["x-google-token"];
             _ = ValidateTokenAsync(token, context);
+
 
         }
 
@@ -30,6 +32,8 @@ namespace api_app.Filter
                     Audience = new[] { "402562450789-0aau8bfeu40ef95tg4c1c8trnrjoblo5.apps.googleusercontent.com" }
                 });
 
+
+      
             }
             catch
             {
