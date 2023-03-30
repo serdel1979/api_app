@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace api_app.Controllers
 {
@@ -39,6 +40,7 @@ namespace api_app.Controllers
                 return BadRequest($"El {userNewDTO.Email} ya existe!!!");
             }
 
+
             var user = mapper.Map<User>(userNewDTO);
 
             context.Add(user);
@@ -51,6 +53,15 @@ namespace api_app.Controllers
         [HttpGet("getUser/{id:int}")]
         public async Task<ActionResult<UserResponseDTO>> GetUser(int id)
         {
+
+            Microsoft.Extensions.Primitives.StringValues headerValue;
+            if (Request.Headers.TryGetValue("clm", out headerValue))
+            {
+                // Use headerValue
+                string decodedString = Encoding.UTF8.GetString(Convert.FromBase64String(headerValue.ToString()));
+                Console.WriteLine(decodedString);
+            }
+
             var user = await context.Users.Include(x=>x.Responsability)
                            .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -58,6 +69,8 @@ namespace api_app.Controllers
             {
                 return NotFound();
             }
+
+
 
             var dto = mapper.Map<UserResponseDTO>(user);
             return dto;
