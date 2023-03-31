@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace api_app.Controllers
 {
@@ -89,16 +90,18 @@ namespace api_app.Controllers
 
 
         [HttpGet("getUser/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "EsAdmin")]
         public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
 
-            Microsoft.Extensions.Primitives.StringValues headerValue;
-            if (Request.Headers.TryGetValue("clm", out headerValue))
-            {
-                // Use headerValue
-                string decodedString = Encoding.UTF8.GetString(Convert.FromBase64String(headerValue.ToString()));
-                Console.WriteLine(decodedString);
-            }
+            //Microsoft.Extensions.Primitives.StringValues headerValue;
+            //if (Request.Headers.TryGetValue("clm", out headerValue))
+            //{
+            //    // Use headerValue
+            //    string decodedString = Encoding.UTF8.GetString(Convert.FromBase64String(headerValue.ToString()));
+            //    Console.WriteLine(decodedString);
+            //}
 
             var user = await context.Users.Include(x => x.Responsability)
                            .FirstOrDefaultAsync(x => x.Id == id);
@@ -141,9 +144,6 @@ namespace api_app.Controllers
 
         private async Task<SigninResponse> construirToken(LoginDTO loginDTO, User user)
         {
-
-
-       
 
             var claims = new List<Claim>(){
                 new Claim("user", user.Id)
