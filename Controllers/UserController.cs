@@ -81,7 +81,7 @@ namespace api_app.Controllers
 
 
             var user = mapper.Map<User>(userNewDTO);
-
+            user.UserName = user.Email;
             context.Add(user);
             await context.SaveChangesAsync();
 
@@ -121,11 +121,13 @@ namespace api_app.Controllers
 
 
         [HttpPost("doAdmin")]
-        public async Task<ActionResult> hacerAdmin(LoginDTO editarAdminDTO)
+        public async Task<ActionResult> hacerAdmin(LoginDTO doAdmin)
         {
-            var usuario = await userManager.FindByNameAsync(editarAdminDTO.Email);
-
-            await userManager.AddClaimAsync(usuario, new Claim("esAdmin", "1"));
+            //var user = await userManager.FindByEmailAsync(doAdmin.Email);
+            var user = await context.Users.FirstOrDefaultAsync(usr => usr.Email == doAdmin.Email);
+            user.UserName = user.Email;
+            var claim = await userManager.AddClaimAsync(user, new Claim("esAdmin", "1"));
+            Console.WriteLine(claim);   
             return NoContent();
         }
 

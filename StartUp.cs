@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 namespace api_app
@@ -24,11 +25,29 @@ namespace api_app
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options
+                => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
 
-            services.Configure<FormOptions>(options =>
-            {
-                options.KeyLengthLimit = int.MaxValue;
-            });
+            services.AddControllers();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opciones => opciones.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret"])),
+                    ClockSkew = TimeSpan.Zero
+                });
+
+
+            services.AddAutoMapper(typeof(StartUp));
+
+            //services.Configure<FormOptions>(options =>
+            //{
+            //    options.KeyLengthLimit = int.MaxValue;
+            //});
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -38,8 +57,7 @@ namespace api_app
                 opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
             });
 
-            services.AddDbContext<ApplicationDbContext>(options
-             => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
+
 
 
             services.AddAuthentication(options =>
@@ -54,19 +72,6 @@ namespace api_app
             });
 
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opciones => opciones.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret"])),
-                    ClockSkew = TimeSpan.Zero
-                });
-
-
-
             services.AddMvc(options =>
             {
                 options.Filters.Add<AuthorizationFilter>();
@@ -77,9 +82,8 @@ namespace api_app
             //services.AddDbContext<ApplicationDbContext>(options
             //=> options.UseNpgsql(Configuration.GetConnectionString("LocalConnection")));
 
-            services.AddControllers();
+  
 
-            services.AddAutoMapper(typeof(StartUp));
 
 
             services.AddCors(options =>
@@ -98,8 +102,10 @@ namespace api_app
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-        
-            
+
+
+            app.UseAuthentication();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -109,7 +115,7 @@ namespace api_app
             app.UseAuthorization();
 
 
-            app.UseAuthentication();
+           
 
             app.UseEndpoints(endpoints =>
             {
