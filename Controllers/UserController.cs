@@ -131,12 +131,27 @@ namespace api_app.Controllers
             return NoContent();
         }
 
+        [HttpPost("deleteadmin")]
+        public async Task<ActionResult> deleteAdmin(LoginDTO doAdmin)
+        {
+            //var user = await userManager.FindByEmailAsync(doAdmin.Email);
+            var user = await context.Users.FirstOrDefaultAsync(usr => usr.Email == doAdmin.Email);
+            user.UserName = user.Email;
+            var claim = await userManager.RemoveClaimAsync(user, new Claim("esAdmin", "1"));
+            Console.WriteLine(claim);
+            return NoContent();
+        }
+
 
         [HttpPost("signin")]
         public async Task<ActionResult<SigninResponse>> Signin(LoginDTO loginDTO)
         {
             var usrSolicitud = await context.Users.FirstOrDefaultAsync(usr => usr.Email == loginDTO.Email);
             if (usrSolicitud != null && !usrSolicitud.Leader)
+            {
+                return BadRequest("No puede ingresar!!!");
+            }
+            if(usrSolicitud == null)
             {
                 return BadRequest("No puede ingresar!!!");
             }
