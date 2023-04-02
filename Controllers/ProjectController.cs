@@ -37,9 +37,10 @@ namespace api_app.Controllers
         [HttpGet("getProject/{id:int}")]
         public async Task<ActionResult<ProjectRespDTO>> GetProject(int id)
         {
-            var project = await context.Projects.Include(x => x.Leader)
-                            .Include(x => x.Job)
-                           .FirstOrDefaultAsync(x => x.Id == id);
+            var project = await context.Projects
+                                .Include(x => x.Leader)
+                                .Include(x => x.Job)
+                                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (project == null)
             {

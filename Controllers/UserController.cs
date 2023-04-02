@@ -48,27 +48,7 @@ namespace api_app.Controllers
         }
 
 
-        [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginDTO loginDTO)
-        {
-            var role = "nullable";
-            var entidadSolicitud = await context.Users.FirstOrDefaultAsync(solicitud => solicitud.Email == loginDTO.Email);
-            if (entidadSolicitud != null)
-            {
-                if (entidadSolicitud.IsAdmin)
-                { role = "isadmin"; }
-            }
-            byte[] bytes = Encoding.UTF8.GetBytes(role);
-            string base64 = Convert.ToBase64String(bytes);
-            var response = new ResponseRole
-            {
-                Role = base64,
-            };
-            return Ok(response);
-        }
-
-
-
+       
 
         [HttpPost("add")]
         public async Task<ActionResult> AddUser(UserNewDTO userNewDTO)
@@ -146,20 +126,35 @@ namespace api_app.Controllers
         [HttpPost("signin")]
         public async Task<ActionResult<SigninResponse>> Signin(LoginDTO loginDTO)
         {
-            var usrSolicitud = await context.Users.FirstOrDefaultAsync(usr => usr.Email == loginDTO.Email);
-            if (usrSolicitud != null && !usrSolicitud.Leader)
-            {
-                return BadRequest("No puede ingresar!!!");
-            }
-            if(usrSolicitud == null)
+            var usrSignin= await context.Users.FirstOrDefaultAsync(usr => usr.Email == loginDTO.Email);
+
+            if (usrSignin == null)
             {
                 return BadRequest("No puede ingresar!!!");
             }
 
-            return await construirToken(loginDTO, usrSolicitud);
+            if (usrSignin != null && !usrSignin.Leader)
+            {
+                return BadRequest("No puede ingresar!!!");
+            }
+            //en este punto el usuario que ingresa es lider de un proyecto
+            // var project = await context.Projects.FirstOrDefaultAsync(project => project.LeaderId == usrSignin.Id);
+
+            var project = await context.Projects
+                    .Include(x => x.Leader)
+                    .Include(x => x.Job)
+                    .FirstOrDefaultAsync(x => x.LeaderId == usrSignin.Id);
+
+
+            if (project == null)
+            {
+                return BadRequest("No tiene proyecto fue asignado!!!");
+            }
+            var dto = mapper.Map<ProjectRespDTO>(project);
+            return await construirToken(loginDTO, usrSignin, dto);
         }
 
-        private async Task<SigninResponse> construirToken(LoginDTO loginDTO, User user)
+        private async Task<SigninResponse> construirToken(LoginDTO loginDTO, User user, ProjectRespDTO project)
         {
 
             var claims = new List<Claim>(){
@@ -184,7 +179,8 @@ namespace api_app.Controllers
                 Email = user.Email,
                 Claims = claimsDB.Count(),
                 Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
-                Expiracion = expiracion
+                Expiracion = expiracion,
+                Project= project
             };
 
         }

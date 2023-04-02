@@ -12,6 +12,6 @@ namespace api_app.DTO
         public string Construction_manager { get; set; }
         public string Supervisor { get; set; }
         public string Reference { get; set; }
-        public int LeaderId { get; set; }
+        public string LeaderId { get; set; }
     }
 }
