@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-﻿using Microsoft.AspNetCore.Authentication.Google;
-=======
-﻿
+
 using api_app.Filter;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
->>>>>>> development
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
