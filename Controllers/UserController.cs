@@ -75,14 +75,6 @@ namespace api_app.Controllers
         public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
 
-            //Microsoft.Extensions.Primitives.StringValues headerValue;
-            //if (Request.Headers.TryGetValue("clm", out headerValue))
-            //{
-            //    // Use headerValue
-            //    string decodedString = Encoding.UTF8.GetString(Convert.FromBase64String(headerValue.ToString()));
-            //    Console.WriteLine(decodedString);
-            //}
-
             var user = await context.Users.Include(x => x.Responsability)
                            .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -91,9 +83,22 @@ namespace api_app.Controllers
                 return NotFound();
             }
 
-
-
             var dto = mapper.Map<UserResponseDTO>(user);
+            return dto;
+        }
+
+        [HttpGet("getWorkers")]
+        public async Task<ActionResult<List<UserResponseDTO>>> GetUserWorker()
+        {
+
+            var users = await context.Users.Where(x => x.Leader == false).ToListAsync();
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            var dto = mapper.Map<List<UserResponseDTO>>(users);
             return dto;
         }
 
