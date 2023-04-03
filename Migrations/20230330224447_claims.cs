@@ -4,7 +4,7 @@
 
 namespace api_app.Migrations
 {
-    public partial class railway : Migration
+    public partial class claims : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

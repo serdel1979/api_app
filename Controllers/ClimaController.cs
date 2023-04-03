@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace api_app.Controllers
 {
@@ -25,6 +26,16 @@ namespace api_app.Controllers
         {
             try
             {
+
+                Microsoft.Extensions.Primitives.StringValues headerValue;
+                if (Request.Headers.TryGetValue("clm", out headerValue))
+                {
+                    // Use headerValue
+                    string decodedString = Encoding.UTF8.GetString(Convert.FromBase64String(headerValue.ToString()));
+                    Console.WriteLine(decodedString);
+                }
+
+
                 var key = Configuration.GetValue<string>("ApiKey");
                 var response = await _client.GetAsync($"https://api.openweathermap.org/data/2.5/weather?lat={latitud}&lon={longitud}&appid={key}&lang=es");
                 var content = await response.Content.ReadAsStringAsync();

@@ -15,6 +15,7 @@ namespace api_app
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<User>().ToTable("AspNetUsers");
         }
 
 
