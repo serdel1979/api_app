@@ -110,10 +110,15 @@ namespace api_app.Controllers
         {
             //var user = await userManager.FindByEmailAsync(doAdmin.Email);
             var user = await context.Users.FirstOrDefaultAsync(usr => usr.Email == doAdmin.Email);
-            user.UserName = user.Email;
-            var claim = await userManager.AddClaimAsync(user, new Claim("esAdmin", "1"));
-            Console.WriteLine(claim);   
-            return NoContent();
+            if(user != null)
+            {
+                user.UserName = user.Email;
+                var claim = await userManager.AddClaimAsync(user, new Claim("esAdmin", "1"));
+                return NoContent();
+            }
+
+            return BadRequest("Solicitud fallida");
+            
         }
 
         [HttpPost("deleteadmin")]
@@ -121,10 +126,13 @@ namespace api_app.Controllers
         {
             //var user = await userManager.FindByEmailAsync(doAdmin.Email);
             var user = await context.Users.FirstOrDefaultAsync(usr => usr.Email == doAdmin.Email);
-            user.UserName = user.Email;
-            var claim = await userManager.RemoveClaimAsync(user, new Claim("esAdmin", "1"));
-            Console.WriteLine(claim);
-            return NoContent();
+            if (user != null)
+            {
+                user.UserName = user.Email;
+                var claim = await userManager.RemoveClaimAsync(user, new Claim("esAdmin", "1"));
+                return NoContent();
+            }
+            return BadRequest("Solicitud fallida");  
         }
 
 
