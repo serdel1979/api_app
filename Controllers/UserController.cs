@@ -44,11 +44,7 @@ namespace api_app.Controllers
             this._client = new HttpClient();
         }
 
-        public class ResponseRole
-        {
-            public string Role { get; set; }
-        }
-
+      
 
        
 
@@ -72,7 +68,6 @@ namespace api_app.Controllers
 
 
         [HttpGet("getUser/{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
        // [Authorize(Policy = "EsAdmin")]
         public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
@@ -139,6 +134,7 @@ namespace api_app.Controllers
 
 
         [HttpPost("signin")]
+        [AllowAnonymous]
         public async Task<ActionResult<SigninResponse>> Signin(LoginDTO loginDTO)
         {
             var usrSignin= await context.Users.FirstOrDefaultAsync(usr => usr.Email == loginDTO.Email);
@@ -163,7 +159,7 @@ namespace api_app.Controllers
 
             if (project == null)
             {
-                return BadRequest("No tiene proyecto fue asignado!!!");
+                return BadRequest("No tiene proyecto asignado!!!");
             }
             var dto = mapper.Map<ProjectRespDTO>(project);
             return await construirToken(loginDTO, usrSignin, dto);
