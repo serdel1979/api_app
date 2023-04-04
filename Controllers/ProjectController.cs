@@ -60,11 +60,17 @@ namespace api_app.Controllers
         public async Task<ActionResult> Report(ReportNewDTO report)
         {
             //primero tengo que guardar un nuevo reporte con fecha actual perteneciente a un proyecto y desp obtener id de reporte para el detalle
-            Console.WriteLine($"id de proyecto recibido {report.ProjectId}");
+            Console.WriteLine($"id del proyecto: {report.ProjectId}");
             Console.WriteLine($"Reporte: {report.Report}");
             for (int i = 0; i < report.Detail.Length; i++)
             {
                 Console.WriteLine($"Empleado {report.Detail[i].UserId} {report.Detail[i].Entry_time} {report.Detail[i].Departure_time}");
+            }
+
+            Console.WriteLine("Actividades desarrolladas");
+            for (int i=0; i < report.Activities_developed.Length; i++)
+            {
+                Console.WriteLine(report.Activities_developed[i].Description);
             }
 
             return Ok(report);

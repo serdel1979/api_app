@@ -11,6 +11,9 @@ namespace api_app.Utilities
         public AutoMapperProfiles()
         {
 
+            CreateMap<Developed_ActivityNewDTO, Developed_Activity>();
+            CreateMap<Developed_Activity, Developed_ActivityNewDTO>();
+
             CreateMap<UserNewDTO, User>();
             CreateMap<User, UserResponseDTO>()
                 .ForMember(x => x.Responsability, options => options.MapFrom(MapResponsability));
@@ -22,8 +25,6 @@ namespace api_app.Utilities
             CreateMap<Project, ProjectRespDTO>()
                 .ForMember(x => x.Leader, options => options.MapFrom(MapLeader))
                 .ForMember(x=> x.Job, options => options.MapFrom(MapJob));
-
-           
 
         }
 
