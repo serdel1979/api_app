@@ -1,6 +1,7 @@
 ﻿using api_app.DTO;
 using api_app.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ namespace api_app.Controllers
 
     [ApiController]
     [Route("responsability")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(Policy = "EsAdmin")]
     public class ResponsabilityController : ControllerBase
     {
 

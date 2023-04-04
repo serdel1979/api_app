@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 
@@ -7,6 +9,8 @@ namespace api_app.Controllers
 
     [ApiController]
     [Route("climate")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(Policy = "EsAdmin")]
     public class ClimaController : ControllerBase
     {
 

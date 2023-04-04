@@ -1,14 +1,19 @@
 ﻿using api_app.DTO;
 using api_app.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace api_app.Controllers
 {
 
     [ApiController]
     [Route("project")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(Policy = "EsAdmin")]
     public class ProjectController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -49,6 +54,20 @@ namespace api_app.Controllers
 
             var dto = mapper.Map<ProjectRespDTO>(project);
             return dto;
+        }
+
+        [HttpPost("report")]
+        public async Task<ActionResult> Report(ReportNewDTO report)
+        {
+            //primero tengo que guardar un nuevo reporte con fecha actual perteneciente a un proyecto y desp obtener id de reporte para el detalle
+            Console.WriteLine($"id de proyecto recibido {report.ProjectId}");
+            Console.WriteLine($"Reporte: {report.Report}");
+            for (int i = 0; i < report.Detail.Length; i++)
+            {
+                Console.WriteLine($"Empleado {report.Detail[i].UserId}");
+            }
+
+            return Ok(report);
         }
 
     }

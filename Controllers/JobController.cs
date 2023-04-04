@@ -1,6 +1,8 @@
 ﻿using api_app.DTO;
 using api_app.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +10,8 @@ namespace api_app.Controllers
 {
     [ApiController]
     [Route("job")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(Policy = "EsAdmin")]
     public class JobController : ControllerBase
     {
         private readonly ApplicationDbContext context;

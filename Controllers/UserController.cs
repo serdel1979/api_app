@@ -17,6 +17,8 @@ namespace api_app.Controllers
 {
     [ApiController]
     [Route("users")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(Policy = "EsAdmin")]
     public class UserController : ControllerBase
     {
 
@@ -71,7 +73,7 @@ namespace api_app.Controllers
 
         [HttpGet("getUser/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Policy = "EsAdmin")]
+       // [Authorize(Policy = "EsAdmin")]
         public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
 
