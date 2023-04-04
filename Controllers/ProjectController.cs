@@ -64,7 +64,7 @@ namespace api_app.Controllers
             Console.WriteLine($"Reporte: {report.Report}");
             for (int i = 0; i < report.Detail.Length; i++)
             {
-                Console.WriteLine($"Empleado {report.Detail[i].UserId}");
+                Console.WriteLine($"Empleado {report.Detail[i].UserId} {report.Detail[i].Entry_time} {report.Detail[i].Departure_time}");
             }
 
             return Ok(report);
