@@ -98,7 +98,7 @@ namespace api_app.Controllers
                 for(int j=0; j < report.Observations[i].Photos.Length; j++)
                 {
                     //Console.Write('Foto --> ');
-                    Console.WriteLine(report.Observations[i].Photos[j].Image);
+                   // Console.WriteLine(report.Observations[i].Photos[j].Image);
                 }
             }
 
