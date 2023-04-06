@@ -87,6 +87,21 @@ namespace api_app.Controllers
                 Console.WriteLine(report.Need_next_day[i].Description);
             }
 
+
+            Console.WriteLine("Observaciones----");
+
+            for (int i = 0; i < report.Observations.Length; i++)
+            {
+                Console.WriteLine(report.Observations[i].Description);
+
+                Console.WriteLine("Fotos incluidas");
+                for(int j=0; j < report.Observations[i].Photos.Length; j++)
+                {
+                    //Console.Write('Foto --> ');
+                    Console.WriteLine(report.Observations[i].Photos[j].Image);
+                }
+            }
+
             return Ok(report);
         }
 

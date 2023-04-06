@@ -1,4 +1,6 @@
-﻿namespace api_app.DTO
+﻿using api_app.Entities;
+
+namespace api_app.DTO
 {
     public class ReportNewDTO
     {
@@ -8,6 +10,7 @@
 
         public Activity_next_dayNewDTO[] Activity_to_Dev { get; set; }
         public Need_next_dayNewDTO[] Need_next_day { get; set; }
+        public ObservationNewDTO[] Observations { get; set; }
         public string Report { get; set; }
     }
 }

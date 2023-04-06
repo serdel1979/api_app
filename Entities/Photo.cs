@@ -9,6 +9,6 @@ namespace api_app.Entities
         public Observation Observation { get; set; }
         public int ObservationId { get; set; }
 
-        public byte[] Image { get; set; } = null;
+        public string Image { get; set; } = null;
     }
 }
