@@ -70,21 +70,21 @@ namespace api_app.Controllers
             Console.WriteLine("Actividades desarrolladas----");
             for (int i=0; i < report.Activities_developed.Length; i++)
             {
-                Console.WriteLine(report.Activities_developed[i].Description);
+                Console.WriteLine($"    {report.Activities_developed[i].Description}");
             }
 
             Console.WriteLine("Actividades a desarrollar mañana----");
 
             for (int i = 0; i < report.Activity_to_Dev.Length; i++)
             {
-                Console.WriteLine(report.Activity_to_Dev[i].Description);
+                Console.WriteLine($"    {report.Activity_to_Dev[i].Description}");
             }
 
             Console.WriteLine("Necesidades para mañana----");
 
             for (int i = 0; i < report.Need_next_day.Length; i++)
             {
-                Console.WriteLine(report.Need_next_day[i].Description);
+                Console.WriteLine($"    {report.Need_next_day[i].Description}");
             }
 
 
@@ -98,7 +98,7 @@ namespace api_app.Controllers
                 for(int j=0; j < report.Observations[i].Photos.Length; j++)
                 {
                     //Console.Write('Foto --> ');
-                   // Console.WriteLine(report.Observations[i].Photos[j].Image);
+                    Console.WriteLine($"            {report.Observations[i].Photos[j].Description}");
                 }
             }
 
