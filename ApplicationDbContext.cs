@@ -18,6 +18,7 @@ namespace api_app
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("AspNetUsers");
+            builder.Entity<Assigned_Activity>().HasKey(x => new { x.UserId, x.Developed_ActivityId });
 
         }
 
@@ -34,6 +35,7 @@ namespace api_app
 
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Observation> Observations { get; set; }
+        public DbSet<Assigned_Activity> Assigned_Activities { get; set; }
 
 
     }
