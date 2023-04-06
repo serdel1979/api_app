@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api_app;
@@ -11,9 +12,10 @@ using api_app;
 namespace api_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230406171557_relacion_activity_assigned")]
+    partial class relacion_activity_assigned
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,15 +48,20 @@ namespace api_app.Migrations
 
             modelBuilder.Entity("api_app.Entities.Assigned_Activity", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Developed_ActivityId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("userId")
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "Developed_ActivityId");
 
                     b.HasIndex("Developed_ActivityId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("Assigned_Activities");
                 });
@@ -545,9 +552,7 @@ namespace api_app.Migrations
 
                     b.HasOne("api_app.Entities.User", "user")
                         .WithMany("Assigned_Activities")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("userId");
 
                     b.Navigation("Developed_Activity");
 

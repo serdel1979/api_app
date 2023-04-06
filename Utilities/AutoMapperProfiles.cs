@@ -10,6 +10,15 @@ namespace api_app.Utilities
     {
         public AutoMapperProfiles()
         {
+            
+            CreateMap<Need_next_dayNewDTO, Need_next_day>();
+            CreateMap<Need_next_day, Need_next_dayNewDTO>();
+
+            CreateMap<Developed_ActivityNewDTO, Developed_Activity>();
+            CreateMap<Developed_Activity, Developed_ActivityNewDTO>();
+
+            CreateMap<Activity_next_dayNewDTO, Activity_next_day>();
+            CreateMap<Activity_next_day, Activity_next_dayNewDTO>();
 
             CreateMap<UserNewDTO, User>();
             CreateMap<User, UserResponseDTO>()
@@ -22,8 +31,6 @@ namespace api_app.Utilities
             CreateMap<Project, ProjectRespDTO>()
                 .ForMember(x => x.Leader, options => options.MapFrom(MapLeader))
                 .ForMember(x=> x.Job, options => options.MapFrom(MapJob));
-
-           
 
         }
 

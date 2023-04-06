@@ -1,6 +1,8 @@
 ﻿using api_app.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Reflection.Emit;
 
 namespace api_app
 {
@@ -16,6 +18,8 @@ namespace api_app
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("AspNetUsers");
+            builder.Entity<Assigned_Activity>().HasKey(x => new { x.UserId, x.Developed_ActivityId });
+
         }
 
 
@@ -30,6 +34,8 @@ namespace api_app
         public DbSet<Need_next_day> Needs_next_day { get; set; }
 
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Observation> Observations { get; set; }
+        public DbSet<Assigned_Activity> Assigned_Activities { get; set; }
 
 
     }

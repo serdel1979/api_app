@@ -17,6 +17,8 @@ namespace api_app.Controllers
 {
     [ApiController]
     [Route("users")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(Policy = "EsAdmin")]
     public class UserController : ControllerBase
     {
 
@@ -42,11 +44,7 @@ namespace api_app.Controllers
             this._client = new HttpClient();
         }
 
-        public class ResponseRole
-        {
-            public string Role { get; set; }
-        }
-
+      
 
        
 
@@ -70,8 +68,7 @@ namespace api_app.Controllers
 
 
         [HttpGet("getUser/{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Policy = "EsAdmin")]
+       // [Authorize(Policy = "EsAdmin")]
         public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
 
@@ -110,10 +107,15 @@ namespace api_app.Controllers
         {
             //var user = await userManager.FindByEmailAsync(doAdmin.Email);
             var user = await context.Users.FirstOrDefaultAsync(usr => usr.Email == doAdmin.Email);
-            user.UserName = user.Email;
-            var claim = await userManager.AddClaimAsync(user, new Claim("esAdmin", "1"));
-            Console.WriteLine(claim);   
-            return NoContent();
+            if(user != null)
+            {
+                user.UserName = user.Email;
+                var claim = await userManager.AddClaimAsync(user, new Claim("esAdmin", "1"));
+                return NoContent();
+            }
+
+            return BadRequest("Solicitud fallida");
+            
         }
 
         [HttpPost("deleteadmin")]
@@ -121,14 +123,18 @@ namespace api_app.Controllers
         {
             //var user = await userManager.FindByEmailAsync(doAdmin.Email);
             var user = await context.Users.FirstOrDefaultAsync(usr => usr.Email == doAdmin.Email);
-            user.UserName = user.Email;
-            var claim = await userManager.RemoveClaimAsync(user, new Claim("esAdmin", "1"));
-            Console.WriteLine(claim);
-            return NoContent();
+            if (user != null)
+            {
+                user.UserName = user.Email;
+                var claim = await userManager.RemoveClaimAsync(user, new Claim("esAdmin", "1"));
+                return NoContent();
+            }
+            return BadRequest("Solicitud fallida");  
         }
 
 
         [HttpPost("signin")]
+        [AllowAnonymous]
         public async Task<ActionResult<SigninResponse>> Signin(LoginDTO loginDTO)
         {
             var usrSignin= await context.Users.FirstOrDefaultAsync(usr => usr.Email == loginDTO.Email);
@@ -153,7 +159,7 @@ namespace api_app.Controllers
 
             if (project == null)
             {
-                return BadRequest("No tiene proyecto fue asignado!!!");
+                return BadRequest("No tiene proyecto asignado!!!");
             }
             var dto = mapper.Map<ProjectRespDTO>(project);
             return await construirToken(loginDTO, usrSignin, dto);

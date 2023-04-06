@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api_app;
@@ -11,9 +12,10 @@ using api_app;
 namespace api_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230405132518_entities")]
+    partial class entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,21 +44,6 @@ namespace api_app.Migrations
                     b.HasIndex("ReportId");
 
                     b.ToTable("Activities_next_day");
-                });
-
-            modelBuilder.Entity("api_app.Entities.Assigned_Activity", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Developed_ActivityId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("UserId", "Developed_ActivityId");
-
-                    b.HasIndex("Developed_ActivityId");
-
-                    b.ToTable("Assigned_Activities");
                 });
 
             modelBuilder.Entity("api_app.Entities.Developed_Activity", b =>
@@ -535,25 +522,6 @@ namespace api_app.Migrations
                         .HasForeignKey("ReportId");
                 });
 
-            modelBuilder.Entity("api_app.Entities.Assigned_Activity", b =>
-                {
-                    b.HasOne("api_app.Entities.Developed_Activity", "Developed_Activity")
-                        .WithMany("AssignedActivities")
-                        .HasForeignKey("Developed_ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api_app.Entities.User", "user")
-                        .WithMany("Assigned_Activities")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Developed_Activity");
-
-                    b.Navigation("user");
-                });
-
             modelBuilder.Entity("api_app.Entities.Developed_Activity", b =>
                 {
                     b.HasOne("api_app.Entities.Report", null)
@@ -705,11 +673,6 @@ namespace api_app.Migrations
                     b.Navigation("Responsability");
                 });
 
-            modelBuilder.Entity("api_app.Entities.Developed_Activity", b =>
-                {
-                    b.Navigation("AssignedActivities");
-                });
-
             modelBuilder.Entity("api_app.Entities.Observation", b =>
                 {
                     b.Navigation("Photos");
@@ -726,11 +689,6 @@ namespace api_app.Migrations
                     b.Navigation("Observations");
 
                     b.Navigation("Report_Detail");
-                });
-
-            modelBuilder.Entity("api_app.Entities.User", b =>
-                {
-                    b.Navigation("Assigned_Activities");
                 });
 #pragma warning restore 612, 618
         }
