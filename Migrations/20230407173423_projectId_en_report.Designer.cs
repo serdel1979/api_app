@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api_app;
@@ -11,9 +12,10 @@ using api_app;
 namespace api_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230407173423_projectId_en_report")]
+    partial class projectId_en_report
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ReportId")
+                    b.Property<int?>("ReportId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -71,7 +73,7 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ReportId")
+                    b.Property<int?>("ReportId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -110,7 +112,7 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ReportId")
+                    b.Property<int?>("ReportId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -132,12 +134,17 @@ namespace api_app.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ReportId")
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Report_detailId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
+
+                    b.HasIndex("Report_detailId");
 
                     b.ToTable("Observations");
                 });
@@ -232,15 +239,9 @@ namespace api_app.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Report");
                 });
@@ -255,6 +256,10 @@ namespace api_app.Migrations
 
                     b.Property<DateTime>("Departure_time")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Entry_Time")
                         .HasColumnType("timestamp without time zone");
@@ -527,13 +532,9 @@ namespace api_app.Migrations
 
             modelBuilder.Entity("api_app.Entities.Activity_next_day", b =>
                 {
-                    b.HasOne("api_app.Entities.Report", "Report")
+                    b.HasOne("api_app.Entities.Report", null)
                         .WithMany("Activities_next_day")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Report");
+                        .HasForeignKey("ReportId");
                 });
 
             modelBuilder.Entity("api_app.Entities.Assigned_Activity", b =>
@@ -557,35 +558,31 @@ namespace api_app.Migrations
 
             modelBuilder.Entity("api_app.Entities.Developed_Activity", b =>
                 {
-                    b.HasOne("api_app.Entities.Report", "Report")
+                    b.HasOne("api_app.Entities.Report", null)
                         .WithMany("Developed_activities")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Report");
+                        .HasForeignKey("ReportId");
                 });
 
             modelBuilder.Entity("api_app.Entities.Need_next_day", b =>
                 {
-                    b.HasOne("api_app.Entities.Report", "Report")
+                    b.HasOne("api_app.Entities.Report", null)
                         .WithMany("Needs_next_day")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Report");
+                        .HasForeignKey("ReportId");
                 });
 
             modelBuilder.Entity("api_app.Entities.Observation", b =>
                 {
-                    b.HasOne("api_app.Entities.Report", "Report")
+                    b.HasOne("api_app.Entities.Report", null)
                         .WithMany("Observations")
-                        .HasForeignKey("ReportId")
+                        .HasForeignKey("ReportId");
+
+                    b.HasOne("api_app.Entities.Report_detail", "Report_detail")
+                        .WithMany()
+                        .HasForeignKey("Report_detailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Report");
+                    b.Navigation("Report_detail");
                 });
 
             modelBuilder.Entity("api_app.Entities.Photo", b =>
@@ -626,15 +623,7 @@ namespace api_app.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api_app.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Project");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("api_app.Entities.Report_detail", b =>

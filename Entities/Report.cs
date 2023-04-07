@@ -6,11 +6,12 @@
 
         public DateTime Date { get; set; }
         public Project Project { get; set; }
+        public int ProjectId { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
         public List<Report_detail> Report_Detail { get; set; }
 
         public List<Developed_Activity>  Developed_activities { get; set; }
-
-
         public List<Observation> Observations { get; set; }
 
         public List<Need_next_day> Needs_next_day { get; set; }

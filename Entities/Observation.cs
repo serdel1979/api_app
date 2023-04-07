@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
 
-        public Report_detail Report_detail { get; set; }
-        public int Report_detailId { get; set; }
+        public Report Report { get; set; }
+        public int ReportId { get; set; }
         public List<Photo> Photos { get; set; }
         public string Description { get; set; }
     }
