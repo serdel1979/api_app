@@ -126,7 +126,7 @@ namespace api_app.Controllers
             for (int i = 0; i < report.Need_next_day.Length; i++)
             {
                 Console.WriteLine($"    {report.Need_next_day[i].Description}");
-                var needNextDay = new Activity_next_day
+                var needNextDay = new Need_next_day
                 {
                     Description = report.Need_next_day[i].Description,
                     Report = reportNew
@@ -165,8 +165,6 @@ namespace api_app.Controllers
                     await context.SaveChangesAsync();
                 }
             }
-           
-           
 
             return Ok(report);
         }
