@@ -63,7 +63,7 @@ namespace api_app.Controllers
             //context.Add(project);
             //await context.SaveChangesAsync();
 
-            //primero tengo que guardar un nuevo reporte con fecha actual perteneciente a un proyecto y desp obtener id de reporte para el detalle
+            //primero tengo que guardar un nuevo reporte con fecha actual perteneciente a un proyecto
             Console.WriteLine($"id del proyecto: {report.ProjectId}");
             Console.WriteLine($"Reporte: {report.Reported}");
 

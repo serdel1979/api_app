@@ -30,10 +30,32 @@ namespace api_app.Utilities
             CreateMap<ProjectNewDTO, Project>();
             CreateMap<Project, ProjectRespDTO>()
                 .ForMember(x => x.Leader, options => options.MapFrom(MapLeader))
-                .ForMember(x=> x.Job, options => options.MapFrom(MapJob));
+                .ForMember(x => x.Job, options => options.MapFrom(MapJob));
+               // .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
 
         }
 
+
+        //private List<UserResponseDTO> MapUsers(Project project, ProjectRespDTO projectResponseDto)
+        //{
+
+        //    var result = new List<UserResponseDTO>();
+
+        //    if(project.Users == null) { return result; }
+
+        //    foreach(var user in project.Users) {
+        //        result.Add(new UserResponseDTO()
+        //        {
+        //            Id = user.Id,
+        //            Name = user.Name,
+        //            Email = user.Email,
+        //            Surname = user.Surname,
+        //            Dni = user.Dni,
+        //        });
+        //    }
+
+        //    return result;
+        //}
 
         private Job MapJob(Project project, ProjectRespDTO projectResponseDto)
         {
