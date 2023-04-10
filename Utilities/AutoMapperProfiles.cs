@@ -22,16 +22,16 @@ namespace api_app.Utilities
 
             CreateMap<UserNewDTO, User>();
             CreateMap<User, UserResponseDTO>()
-                .ForMember(x => x.Responsability, options => options.MapFrom(MapResponsability));
+                .ForMember(x => x.Responsability, options => options.MapFrom(MapResponsability))
+                .ForMember(x => x.Project, options => options.MapFrom(MapProject));
             CreateMap<ResponsabilityNewDTO, Responsability>();
             CreateMap<Responsability, ResponsabilityRespDTO>();
             CreateMap<JobNewDTO, Job>();
             CreateMap<Job, JobRespDTO>();
             CreateMap<ProjectNewDTO, Project>();
             CreateMap<Project, ProjectRespDTO>()
-              //  .ForMember(x => x.Leader, options => options.MapFrom(MapLeader))
-                .ForMember(x => x.Job, options => options.MapFrom(MapJob))
-                .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
+                .ForMember(x => x.Job, options => options.MapFrom(MapJob));
+              //  .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
 
         }
 
@@ -52,9 +52,11 @@ namespace api_app.Utilities
                     Email = user.Email,
                     Surname = user.Surname,
                     Dni = user.Dni,
+                    ResponsabilityId = user.ResponsabilityId,
+                    ProjectId = user.ProjectId,
+                    Leader = user.Leader 
                 });
             }
-
             return result;
         }
 
@@ -80,6 +82,15 @@ namespace api_app.Utilities
             //acá puedo agregar lógica de mapeo entre los dto
 
             return user.Responsability;
+        }
+
+
+        private Project MapProject(User user, UserResponseDTO userResponseDto)
+        {
+
+            //acá puedo agregar lógica de mapeo entre los dto
+
+            return user.Project;
         }
     }
 }

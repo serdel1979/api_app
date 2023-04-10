@@ -149,21 +149,24 @@ namespace api_app.Controllers
                 return BadRequest("No puede ingresar!!!");
             }
             //en este punto el usuario que ingresa es lider de un proyecto
-            // var project = await context.Projects.FirstOrDefaultAsync(project => project.LeaderId == usrSignin.Id);
+             var project = await context.Projects.FirstOrDefaultAsync(project => project.Id == usrSignin.ProjectId);
 
             //var project = await context.Projects
             //        //.Include(x => x.Leader)
             //        .Include(x => x.Job)
             //        .FirstOrDefaultAsync(x => x.LeaderId == usrSignin.Id);
 
-            var project = usrSignin.Project;
+            //var userDto = mapper.Map<UserResponseDTO>(usrSignin);
+
+           // var project = usrSignin.Project;
 
 
-            if (project == null)
-            {
-                return BadRequest("No tiene proyecto asignado!!!");
-            }
+            //if (project == null)
+            //{
+            //    return BadRequest("No tiene proyecto asignado!!!");
+            //}
             var dto = mapper.Map<ProjectRespDTO>(project);
+
             return await construirToken(loginDTO, usrSignin, dto);
         }
 
