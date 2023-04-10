@@ -29,33 +29,34 @@ namespace api_app.Utilities
             CreateMap<Job, JobRespDTO>();
             CreateMap<ProjectNewDTO, Project>();
             CreateMap<Project, ProjectRespDTO>()
-                .ForMember(x => x.Leader, options => options.MapFrom(MapLeader))
-                .ForMember(x => x.Job, options => options.MapFrom(MapJob));
-               // .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
+              //  .ForMember(x => x.Leader, options => options.MapFrom(MapLeader))
+                .ForMember(x => x.Job, options => options.MapFrom(MapJob))
+                .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
 
         }
 
 
-        //private List<UserResponseDTO> MapUsers(Project project, ProjectRespDTO projectResponseDto)
-        //{
+        private List<UserResponseDTO> MapUsers(Project project, ProjectRespDTO projectResponseDto)
+        {
 
-        //    var result = new List<UserResponseDTO>();
+            var result = new List<UserResponseDTO>();
 
-        //    if(project.Users == null) { return result; }
+            if (project.Users == null) { return result; }
 
-        //    foreach(var user in project.Users) {
-        //        result.Add(new UserResponseDTO()
-        //        {
-        //            Id = user.Id,
-        //            Name = user.Name,
-        //            Email = user.Email,
-        //            Surname = user.Surname,
-        //            Dni = user.Dni,
-        //        });
-        //    }
+            foreach (var user in project.Users)
+            {
+                result.Add(new UserResponseDTO()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Surname = user.Surname,
+                    Dni = user.Dni,
+                });
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
 
         private Job MapJob(Project project, ProjectRespDTO projectResponseDto)
         {
@@ -65,13 +66,13 @@ namespace api_app.Utilities
             return project.Job;
         }
 
-        private User MapLeader(Project project, ProjectRespDTO projectResponseDto)
-        {
+        //private User MapLeader(Project project, ProjectRespDTO projectResponseDto)
+        //{
 
-            //acá puedo agregar lógica de mapeo entre los dto
+        //    //acá puedo agregar lógica de mapeo entre los dto
 
-            return project.Leader;
-        }
+        //    return project.Leader;
+        //}
 
         private Responsability MapResponsability(User user, UserResponseDTO userResponseDto)
         {

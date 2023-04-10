@@ -14,9 +14,9 @@ namespace api_app.Entities
         public int ResponsabilityId { get; set; }
         public List<Assigned_Activity> Assigned_Activities { get; set; }
 
-        //public Project Project { get; set; }
+        public Project Project { get; set; }
 
-        //public int ProjectId { get; set; }
+        public int ProjectId { get; set; }
         public Boolean IsAdmin { get; set; } = false;
         public Boolean Leader { get; set; } = false;
     }

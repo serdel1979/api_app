@@ -43,7 +43,7 @@ namespace api_app.Controllers
         public async Task<ActionResult<ProjectRespDTO>> GetProject(int id)
         {
             var project = await context.Projects
-                                .Include(x => x.Leader)
+                              //  .Include(x => x.Leader)
                                 .Include(x => x.Job)
                                 .FirstOrDefaultAsync(x => x.Id == id);
 

@@ -151,10 +151,12 @@ namespace api_app.Controllers
             //en este punto el usuario que ingresa es lider de un proyecto
             // var project = await context.Projects.FirstOrDefaultAsync(project => project.LeaderId == usrSignin.Id);
 
-            var project = await context.Projects
-                    .Include(x => x.Leader)
-                    .Include(x => x.Job)
-                    .FirstOrDefaultAsync(x => x.LeaderId == usrSignin.Id);
+            //var project = await context.Projects
+            //        //.Include(x => x.Leader)
+            //        .Include(x => x.Job)
+            //        .FirstOrDefaultAsync(x => x.LeaderId == usrSignin.Id);
+
+            var project = usrSignin.Project;
 
 
             if (project == null)
