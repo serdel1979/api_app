@@ -30,8 +30,8 @@ namespace api_app.Utilities
             CreateMap<Job, JobRespDTO>();
             CreateMap<ProjectNewDTO, Project>();
             CreateMap<Project, ProjectRespDTO>()
-                .ForMember(x => x.Job, options => options.MapFrom(MapJob));
-              //  .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
+                .ForMember(x => x.Job, options => options.MapFrom(MapJob))
+                .ForMember(x => x.Users, options => options.MapFrom(MapUsers));
 
         }
 
@@ -52,8 +52,8 @@ namespace api_app.Utilities
                     Email = user.Email,
                     Surname = user.Surname,
                     Dni = user.Dni,
-                    ResponsabilityId = user.ResponsabilityId,
-                    ProjectId = user.ProjectId,
+                    ResponsabilityId = (int)user.ResponsabilityId,
+                    ProjectId = (int)user.ProjectId,
                     Leader = user.Leader 
                 });
             }

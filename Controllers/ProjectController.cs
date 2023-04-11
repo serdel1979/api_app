@@ -45,6 +45,7 @@ namespace api_app.Controllers
             var project = await context.Projects
                               //  .Include(x => x.Leader)
                                 .Include(x => x.Job)
+                                .Include(x=> x.Users)
                                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (project == null)

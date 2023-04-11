@@ -151,6 +151,7 @@ namespace api_app.Controllers
             //en este punto el usuario que ingresa es lider de un proyecto
             var project = await context.Projects
                 .Include(x => x.Job)
+                .Include(x => x.Users)
                 .FirstOrDefaultAsync(project => project.Id == usrSignin.ProjectId);
 
             //var project = await context.Projects
