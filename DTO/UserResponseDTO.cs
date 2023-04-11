@@ -10,8 +10,8 @@ namespace api_app.DTO
         public string Name { get; set; }
         public string Surname { get; set; }
         public int Dni { get; set; }
-        public Responsability Responsability { get; set; }
-        public Project Project { get; set; }
+        public ResponsabilityRespDTO Responsability { get; set; }
+        public ProjectRespDTO Project { get; set; }
         public int ProjectId { get; set; }
         public int ResponsabilityId { get; set; }
         public Boolean Leader { get; set; } = false;

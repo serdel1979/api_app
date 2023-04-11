@@ -72,7 +72,7 @@ namespace api_app.Controllers
         public async Task<ActionResult<UserResponseDTO>> GetUser(string id)
         {
 
-            var user = await context.Users.Include(x => x.Responsability)
+            var user = await context.Users.Include(x => x.Responsability).Include(x=> x.Project)
                            .FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
@@ -149,16 +149,18 @@ namespace api_app.Controllers
                 return BadRequest("No puede ingresar!!!");
             }
             //en este punto el usuario que ingresa es lider de un proyecto
-             var project = await context.Projects.FirstOrDefaultAsync(project => project.Id == usrSignin.ProjectId);
+            var project = await context.Projects
+                .Include(x => x.Job)
+                .FirstOrDefaultAsync(project => project.Id == usrSignin.ProjectId);
 
             //var project = await context.Projects
-            //        //.Include(x => x.Leader)
+            //        .Include(x => x.Leader)
             //        .Include(x => x.Job)
             //        .FirstOrDefaultAsync(x => x.LeaderId == usrSignin.Id);
 
             //var userDto = mapper.Map<UserResponseDTO>(usrSignin);
 
-           // var project = usrSignin.Project;
+            // var project = usrSignin.Project;
 
 
             //if (project == null)
