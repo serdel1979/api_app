@@ -57,6 +57,33 @@ namespace api_app.Controllers
             return dto;
         }
 
+        [HttpPost("assign/{idProject:int}/user/{idUser}")]
+        public async Task<ActionResult> Assign(int idProject, string idUser)
+        {
+            var user = await context.Users.Include(x => x.Responsability).Include(x => x.Project)
+                           .FirstOrDefaultAsync(x => x.Id == idUser);
+
+            if (user == null)
+            {
+                return NotFound("El usuario no existe");
+            }
+
+            if(user.Project == null)
+            {
+                user.ProjectId = idProject;
+                await context.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+       //
+       //[HttpPost("confirmstaff")]
+
+
+
+
+
+
         [HttpPost("report")]
         public async Task<ActionResult> Report(ReportNewDTO report)
         {
