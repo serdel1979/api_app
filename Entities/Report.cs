@@ -9,6 +9,8 @@
         public int ProjectId { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+
+        public string Status { get; set; }
         public List<Report_detail> Report_Detail { get; set; }
 
         public List<Developed_Activity>  Developed_activities { get; set; }

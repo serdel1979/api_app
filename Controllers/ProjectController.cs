@@ -76,8 +76,14 @@ namespace api_app.Controllers
             return Ok();
         }
 
-       //
-       //[HttpPost("confirmstaff")]
+       
+       [HttpPost("confirmstaff")]
+       public async Task<ActionResult> ConfirmStaff(ConfirmStaffDTO staffActivities)
+       {
+
+
+            return Ok(staffActivities);
+       }
 
 
 
@@ -98,8 +104,9 @@ namespace api_app.Controllers
             var reportNew = new Report
             {
                 ProjectId = report.ProjectId,
+                Status = "PENDIENTE",
                 UserId = report.UserId,
-                Date = DateTime.Now,
+                Date = DateTime.Now.Date,
             };
             context.Add(reportNew);
             await context.SaveChangesAsync();
