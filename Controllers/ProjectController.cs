@@ -123,22 +123,28 @@ namespace api_app.Controllers
                         await context.SaveChangesAsync();
                     }
 
-                    // agregar el report detail al reporte del día de hoy
-                    var reportDetail = new Report_detail
+
+                    var reportDetailexist = await context.Reports_detail.Include(r=>r.Report).Where(repo=>repo.ReportId == todayReport.Id)
+                       .FirstOrDefaultAsync(rd=>rd.UserId  == staff.UserId);
+                    if (reportDetailexist == null)
                     {
-                        UserId = staffActivities.UserId,
-                        ReportId = todayReport.Id,
-                        Entry_Time = DateTime.ParseExact(staff.Entry_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture),
-                        Departure_time = DateTime.ParseExact(staff.Departure_time,"HH:mm", System.Globalization.CultureInfo.InvariantCulture),
-                        Report = todayReport
-                    };
-                    context.Reports_detail.Add(reportDetail);
+                        var reportDetail = new Report_detail
+                        {
+                            UserId = staff.UserId,
+                            ReportId = todayReport.Id,
+                            Entry_Time = DateTime.ParseExact(staff.Entry_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                            Departure_time = DateTime.ParseExact(staff.Departure_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                            Report = todayReport
+                        };
+                        context.Reports_detail.Add(reportDetail);
+                    }
+                   
 
                     //consultar si existe la actividad para el usuario
                     var existingAssignment = await context.Assigned_Activities
                          .FirstOrDefaultAsync(a => a.UserId == staff.UserId && a.Developed_ActivityId == developedActivity.Id);
 
-                    if (existingAssignment != null)
+                    if (existingAssignment == null)
                     {
                         var assignedActivity = new Assigned_Activity
                         {
