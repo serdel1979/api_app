@@ -134,6 +134,7 @@ namespace api_app.Controllers
                     };
                     context.Reports_detail.Add(reportDetail);
 
+                    //consultar si existe la actividad para el usuario
                     var assignedActivity = new Assigned_Activity
                     {
                         UserId = user.Id,
