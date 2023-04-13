@@ -135,12 +135,19 @@ namespace api_app.Controllers
                     context.Reports_detail.Add(reportDetail);
 
                     //consultar si existe la actividad para el usuario
-                    var assignedActivity = new Assigned_Activity
+                    var existingAssignment = await context.Assigned_Activities
+                         .FirstOrDefaultAsync(a => a.UserId == staff.UserId && a.Developed_ActivityId == developedActivity.Id);
+
+                    if (existingAssignment != null)
                     {
-                        UserId = user.Id,
-                        Developed_Activity = developedActivity
-                    };
-                    context.Assigned_Activities.Add(assignedActivity);
+                        var assignedActivity = new Assigned_Activity
+                        {
+                            UserId = user.Id,
+                            Developed_Activity = developedActivity
+                        };
+                        context.Assigned_Activities.Add(assignedActivity);
+                    }
+                    
 
                 }
 
