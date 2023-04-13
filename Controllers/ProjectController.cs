@@ -81,9 +81,59 @@ namespace api_app.Controllers
        public async Task<ActionResult> ConfirmStaff(ConfirmStaffDTO staffActivities)
        {
 
+            var project = await context.Projects.FindAsync(staffActivities.ProjectId);
 
-            return Ok(staffActivities);
-       }
+            // Verificar que el proyecto existe y que el usuario que realiza la confirmación tiene permisos para hacerlo
+            if (project == null)
+            {
+                return BadRequest("El proyecto no existe.");
+            }
+
+            // Recorrer la lista de UserStaffDTO
+            foreach (var userStaff in staffActivities.Staff)
+            {
+                // Verificar que el usuario existe
+                var user = await context.Users.FindAsync(userStaff.UserId);
+                if (user == null)
+                {
+                    return BadRequest($"El usuario {userStaff.UserId} no existe.");
+                }
+
+                // Asignar el ProjectId correspondiente al usuario
+                user.ProjectId = project.Id;
+
+                // Recorrer la lista de ActivityDTO
+                foreach (var activity in userStaff.Activities)
+                {
+                    // Verificar que la actividad existe
+                    var devActivity = await context.Developed_activities.FirstOrDefaultAsync(da => da.Description == activity.Description);
+                    if (devActivity == null)
+                    {
+                        devActivity = new Developed_Activity
+                        {
+                            Description = activity.Description
+                        };
+
+                        context.Developed_activities.Add(devActivity);
+                    }
+
+                    // Crear un nuevo registro en la tabla Assigned_Activities
+                    var assignedActivity = new Assigned_Activity
+                    {
+                        UserId = userStaff.UserId,
+                        Developed_ActivityId = devActivity.Id
+                    };
+
+                    context.Assigned_Activities.Add(assignedActivity);
+                }
+
+                context.Users.Update(user);
+            }
+
+            await context.SaveChangesAsync();
+
+            return Ok();
+        }
 
 
 
