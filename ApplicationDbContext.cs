@@ -34,6 +34,8 @@ namespace api_app
         public DbSet<Need_next_day> Needs_next_day { get; set; }
 
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<Report_detail> Reports_detail { get; set; }
         public DbSet<Observation> Observations { get; set; }
         public DbSet<Assigned_Activity> Assigned_Activities { get; set; }
 

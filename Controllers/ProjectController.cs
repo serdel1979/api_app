@@ -81,53 +81,68 @@ namespace api_app.Controllers
        public async Task<ActionResult> ConfirmStaff(ConfirmStaffDTO staffActivities)
        {
 
-            var project = await context.Projects.FindAsync(staffActivities.ProjectId);
-
-            // Verificar que el proyecto existe y que el usuario que realiza la confirmación tiene permisos para hacerlo
-            if (project == null)
+            // crear o recuperar el reporte del día de hoy
+            var todayReport = await context.Reports.FirstOrDefaultAsync(r => r.Date == DateTime.Today);
+            if (todayReport == null)
             {
-                return BadRequest("El proyecto no existe.");
+                todayReport = new Report
+                {
+                    Date = DateTime.Today,
+                    ProjectId = staffActivities.ProjectId,
+                    UserId = staffActivities.UserId,
+                    Status = "PENDIENTE"
+                };
+                await context.Reports.AddAsync(todayReport);
+                await context.SaveChangesAsync();
             }
 
-            // Recorrer la lista de UserStaffDTO
-            foreach (var userStaff in staffActivities.Staff)
+            foreach (var staff in staffActivities.Staff)
             {
-                // Verificar que el usuario existe
-                var user = await context.Users.FindAsync(userStaff.UserId);
-                if (user == null)
+                // asignar el projecto a cada usuario
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Id == staff.UserId);
+                if (user != null)
                 {
-                    return BadRequest($"El usuario {userStaff.UserId} no existe.");
+                    user.ProjectId = staffActivities.ProjectId;
+                    context.Users.Update(user);
                 }
 
-                // Asignar el ProjectId correspondiente al usuario
-                user.ProjectId = project.Id;
-
-                // Recorrer la lista de ActivityDTO
-                foreach (var activity in userStaff.Activities)
+                // asignar el reporte a cada developed activity
+                foreach (var activity in staff.Activities)
                 {
-                    // Verificar que la actividad existe
-                    var devActivity = await context.Developed_activities.FirstOrDefaultAsync(da => da.Description == activity.Description);
-                    if (devActivity == null)
+                    var developedActivity = await context.Developed_activities
+                        .FirstOrDefaultAsync(da => da.Description == activity.Description);
+                    if (developedActivity == null)
                     {
-                        devActivity = new Developed_Activity
+                        // si la actividad no existe, crearla
+                        developedActivity = new Developed_Activity
                         {
-                            Description = activity.Description
+                            Description = activity.Description,
+                            ReportId = todayReport.Id
                         };
-
-                        context.Developed_activities.Add(devActivity);
+                        context.Developed_activities.Add(developedActivity);
+                        await context.SaveChangesAsync();
                     }
 
-                    // Crear un nuevo registro en la tabla Assigned_Activities
+                    // agregar el report detail al reporte del día de hoy
+                    var reportDetail = new Report_detail
+                    {
+                        UserId = staffActivities.UserId,
+                        ReportId = todayReport.Id,
+                        Entry_Time = DateTime.ParseExact(staff.Entry_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                        Departure_time = DateTime.ParseExact(staff.Departure_time,"HH:mm", System.Globalization.CultureInfo.InvariantCulture),
+                        Report = todayReport
+                    };
+                    context.Reports_detail.Add(reportDetail);
+
                     var assignedActivity = new Assigned_Activity
                     {
-                        UserId = userStaff.UserId,
-                        Developed_ActivityId = devActivity.Id
+                        UserId = user.Id,
+                        Developed_Activity = developedActivity
                     };
-
                     context.Assigned_Activities.Add(assignedActivity);
+
                 }
 
-                context.Users.Update(user);
             }
 
             await context.SaveChangesAsync();

@@ -9,6 +9,8 @@
     public class UserStaffDTO
     {
         public string UserId { get; set; }
+        public string Entry_time { get; set; }
+        public string Departure_time { get; set; }
         public List<ActivityDTO> Activities { get; set; }
 
     }
