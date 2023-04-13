@@ -99,6 +99,25 @@ namespace api_app.Controllers
             return dto;
         }
 
+        [HttpGet("assigned_activities/{userId}/{projectId}")]
+        public async Task<ActionResult<List<Assigned_Activity>>> GetAssignedActivities(string userId, int projectId)
+        {
+            //var assignedActivities = await context.Assigned_Activities
+            //    .Where(a => a.UserId == userId && a.Developed_Activity.Report.ProjectId == projectId)
+            //    .ToListAsync();
+
+            var assignedActivities = await context.Assigned_Activities
+                                        .Where(a => a.UserId == userId && a.Developed_Activity.Report.ProjectId == projectId)
+                                        .Select(a => new Assign_ActivityDTO
+                                                            {
+                                                                UserId = a.UserId,
+                                                                DevelopedActivityId = a.Developed_ActivityId,
+                                                                Description = a.Developed_Activity.Description
+                                                            })
+                                                            .ToListAsync();
+
+            return Ok(assignedActivities);
+        }
 
 
 
