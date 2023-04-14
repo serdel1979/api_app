@@ -141,6 +141,14 @@ namespace api_app.Controllers
                         };
                         context.Reports_detail.Add(reportDetail);
                     }
+                    else
+                    {
+                        var Entry_Time = DateTime.ParseExact(staff.Entry_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                        var Departure_time = DateTime.ParseExact(staff.Departure_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                        reportDetailexist.Entry_Time = Entry_Time;
+                        reportDetailexist.Departure_time = Departure_time;
+                        context.Reports_detail.Update(reportDetailexist);
+                    }
                    
 
                     //consultar si existe la actividad para el usuario
@@ -158,6 +166,25 @@ namespace api_app.Controllers
                     }
                     
 
+                }
+                var activitiesAssiged = await context.Assigned_Activities
+                    .Include(a => a.Developed_Activity)
+                    .Where(a => a.UserId == staff.UserId && a.Developed_Activity.ReportId == todayReport.Id).ToListAsync();
+                
+                foreach (var ativityAsignDB in activitiesAssiged)
+                {
+                    var contain = false;
+                    foreach(var staffActivity in staff.Activities)
+                    {
+                        if (staffActivity.Description == ativityAsignDB.Developed_Activity.Description)
+                        {
+                            contain = true;
+                        }
+                    }
+                    if(!contain )
+                    {
+                        context.Assigned_Activities.Remove(ativityAsignDB);
+                    }
                 }
 
             }
