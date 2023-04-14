@@ -126,6 +126,9 @@ namespace api_app.Controllers
 
                     var reportDetailexist = await context.Reports_detail.Include(r=>r.Report).Where(repo=>repo.ReportId == todayReport.Id)
                        .FirstOrDefaultAsync(rd=>rd.UserId  == staff.UserId);
+
+              
+
                     if (reportDetailexist == null)
                     {
                         var reportDetail = new Report_detail
