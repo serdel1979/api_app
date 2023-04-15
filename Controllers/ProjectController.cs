@@ -110,7 +110,9 @@ namespace api_app.Controllers
                 foreach (var activity in staff.Activities)
                 {
                     var developedActivity = await context.Developed_activities
-                        .FirstOrDefaultAsync(da => da.Description == activity.Description);
+                        .Include(r=>r.Report)
+                        .FirstOrDefaultAsync(da => da.Description == activity.Description 
+                          && da.ReportId == todayReport.Id);
                     if (developedActivity == null)
                     {
                         // si la actividad no existe, crearla
@@ -153,7 +155,8 @@ namespace api_app.Controllers
 
                     //consultar si existe la actividad para el usuario
                     var existingAssignment = await context.Assigned_Activities
-                         .FirstOrDefaultAsync(a => a.UserId == staff.UserId && a.Developed_ActivityId == developedActivity.Id);
+                         .FirstOrDefaultAsync(a => a.UserId == staff.UserId && a.Developed_ActivityId == developedActivity.Id
+                         && a.Developed_Activity.ReportId == todayReport.Id);
 
                     if (existingAssignment == null)
                     {
