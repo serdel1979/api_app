@@ -76,6 +76,44 @@ namespace api_app.Controllers
             return Ok();
         }
 
+
+       [HttpPost("confirmObservations")]
+       public async Task<ActionResult> ConfirmObservations(ObservationReportDTO observationsDTO)
+       {
+
+            var reportDetail = await context.Reports_detail.Include(r => r.Report).Where(repo => repo.Report.Date == DateTime.Today)
+                       .FirstOrDefaultAsync(rd => rd.UserId == observationsDTO.UserId);
+
+            if (reportDetail == null)
+            {
+                return BadRequest("Ud. no tiene reporte generado para hoy");
+            }
+
+            foreach (var observation in observationsDTO.Observations)
+            {
+                
+                var observationNew = new Observation
+                {
+                    Description = observation.Description,
+                    Report = reportDetail.Report
+                };
+                context.Add(observationNew);
+                foreach (var photo in observation.Photos)
+                {
+                    var photoNew = new Photo
+                    {
+                        Image = photo.Image,
+                        Description = photo.Description,
+                        Observation = observationNew
+                    };
+                    context.Add(photoNew);
+                }
+
+            }
+            await context.SaveChangesAsync();
+            return Ok(observationsDTO);
+       }
+
        
        [HttpPost("confirmstaff")]
        public async Task<ActionResult> ConfirmStaff(ConfirmStaffDTO staffActivities)
@@ -210,50 +248,20 @@ namespace api_app.Controllers
             //await context.SaveChangesAsync();
 
             //primero tengo que guardar un nuevo reporte con fecha actual perteneciente a un proyecto
+
+            var reportExist = await context.Reports.Where(r => r.UserId == report.UserId && r.Date == DateTime.Today)
+                .FirstOrDefaultAsync();
+
+            if (reportExist == null)
+            {
+                return BadRequest("No existe un reporte creado!!!");
+            }
             Console.WriteLine($"id del proyecto: {report.ProjectId}");
             Console.WriteLine($"Reporte: {report.Reported}");
 
-            var reportNew = new Report
-            {
-                ProjectId = report.ProjectId,
-                Status = "PENDIENTE",
-                UserId = report.UserId,
-                Date = DateTime.Now.Date,
-            };
-            context.Add(reportNew);
-            await context.SaveChangesAsync();
-            //se guardó entidad reporte
-            //recorro el detalle recibido
 
-            for (int i = 0; i < report.Detail.Length; i++)
-            {
-                Console.WriteLine($"Empleado {report.Detail[i].UserId} {report.Detail[i].Entry_time} {report.Detail[i].Departure_time}");
-                // DateTime.ParseExact(hora,"HH:mm:ss",System.Globalization.CultureInfo.InvariantCulture);
-                var report_detail = new Report_detail
-                {
-                    UserId = report.Detail[i].UserId,
-                    Report = reportNew,
-                    Entry_Time = DateTime.ParseExact(report.Detail[i].Entry_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture),
-                    Departure_time = DateTime.ParseExact(report.Detail[i].Departure_time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture)
-                };
-                context.Add(report_detail);
-                await context.SaveChangesAsync();
-            }
 
-            Console.WriteLine("Actividades desarrolladas----");
-            for (int i=0; i < report.Activities_developed.Length; i++)
-            {
-                Console.WriteLine($"    {report.Activities_developed[i].Description}");
-
-                var activityDeveloped = new Developed_Activity
-                {
-                    Description = report.Activities_developed[i].Description,
-                    Report = reportNew
-                };
-                context.Add(activityDeveloped);
-                await context.SaveChangesAsync();
-            }
-
+           
             Console.WriteLine("Actividades a desarrollar mañana----");
 
             for (int i = 0; i < report.Activity_to_Dev.Length; i++)
@@ -262,7 +270,7 @@ namespace api_app.Controllers
                 var activityNextDay = new Activity_next_day
                 {
                     Description = report.Activity_to_Dev[i].Description,
-                    Report = reportNew
+                    Report = reportExist
                 };
                 context.Add(activityNextDay);
                 await context.SaveChangesAsync();
@@ -276,7 +284,7 @@ namespace api_app.Controllers
                 var needNextDay = new Need_next_day
                 {
                     Description = report.Need_next_day[i].Description,
-                    Report = reportNew
+                    Report = reportExist
                 };
                 context.Add(needNextDay);
                 await context.SaveChangesAsync();
@@ -291,7 +299,7 @@ namespace api_app.Controllers
                 var observation = new Observation
                 {
                     Description = report.Observations[i].Description,
-                    Report = reportNew
+                    Report = reportExist
                 };
                 context.Add(observation);
                 await context.SaveChangesAsync();

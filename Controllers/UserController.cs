@@ -107,7 +107,8 @@ namespace api_app.Controllers
             //    .ToListAsync();
 
             var assignedActivities = await context.Assigned_Activities
-                                        .Where(a => a.UserId == userId && a.Developed_Activity.Report.ProjectId == projectId)
+                                        .Where(a => a.UserId == userId && a.Developed_Activity.Report.ProjectId == projectId
+                                                && a.Developed_Activity.Report.Date == DateTime.Today)
                                         .Select(a => new Assign_ActivityDTO
                                                             {
                                                                 UserId = a.UserId,

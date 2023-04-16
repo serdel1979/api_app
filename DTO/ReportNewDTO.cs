@@ -2,6 +2,18 @@
 
 namespace api_app.DTO
 {
+
+
+    public class ObservationReportDTO
+    {
+     
+        public int projectId { get; set; }
+        public string UserId { get; set; }
+        public ObservationNewDTO[] Observations { get; set; }
+    }
+
+
+
     public class ReportNewDTO
     {
         public int ProjectId { get; set; }
