@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using NodaTime;
 using System.Security.Claims;
 using System.Text;
 
@@ -25,6 +26,8 @@ namespace api_app
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+
             services.AddDbContext<ApplicationDbContext>(options
                 => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
 
@@ -76,6 +79,10 @@ namespace api_app
             {
                 options.Filters.Add<AuthorizationFilter>();
             });
+
+
+
+
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
